@@ -63,7 +63,7 @@ public class Main {
         return prezzo;
     }
 
-    public static void addProdotto() {
+    public static void addProdotto(Magazzino magazzino) {
         Scanner s = new Scanner(System.in);
         pulisciConsole();
 
@@ -77,9 +77,35 @@ public class Main {
         String descrizione = s.nextLine();
 
         System.out.println("Inserisci il prezzo del prodotto:");
+        double prezzo = inserisciPrezzo();
 
-        
+        System.out.println("Inserisci la quantita disponibile del prodotto:");
+        int quantitaDisponibile = getInput(0, 99999);
 
+        System.out.println("Inserisci la quantita minima del prodotto:");
+        int quantitaMinima = getInput(0, 99999);
+
+        if (tipo == 1) {
+            System.out.println("Inserisci il numero delle scarpe:");
+            int numero = getInput(20, 50);
+            
+            Scarpe scarpe = new Scarpe(descrizione, prezzo, quantitaDisponibile, quantitaMinima, numero);
+            magazzino.aggiungiProdotto(scarpe);
+
+        } else {
+            System.out.println("Inserisci la taglia");
+            int taglia = getInput(10, 100);
+
+            if (tipo == 2) {
+                Pantalone pantalone = new Pantalone(descrizione, prezzo, quantitaDisponibile, quantitaMinima, taglia);
+                magazzino.aggiungiProdotto(pantalone);
+                
+            } else {
+                Maglia maglia = new Maglia(descrizione, prezzo, quantitaDisponibile, quantitaMinima, taglia);
+                magazzino.aggiungiProdotto(maglia);
+                
+            }
+        }
         s.close();
     }
 
@@ -95,7 +121,8 @@ public class Main {
         
             switch (state) {
                 case 1:
-                    addProdotto();
+                    addProdotto(magazzino);
+
                     break;
                 case 2:
                     removeProdotto();
