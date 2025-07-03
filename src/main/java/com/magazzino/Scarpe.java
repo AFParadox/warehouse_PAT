@@ -1,3 +1,4 @@
+package src.main.java.com.magazzino;
 public class Scarpe extends Prodotto {
     private int numero;
 

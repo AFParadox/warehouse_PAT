@@ -1,3 +1,4 @@
+package src.main.java.com.magazzino;
 
 public abstract class Prodotto {
     protected String descrizione;

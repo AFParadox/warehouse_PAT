@@ -1,3 +1,4 @@
+package src.main.java.com.magazzino;
 import java.util.ArrayList;
 
 public class Magazzino {

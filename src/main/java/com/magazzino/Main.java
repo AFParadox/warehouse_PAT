@@ -1,3 +1,4 @@
+package src.main.java.com.magazzino;
 import java.util.Scanner;
 
 public class Main {
@@ -116,27 +117,27 @@ public class Main {
         Scanner s = new Scanner(System.in);
 
         while (state != 6) {
-            mostraMenu();
-            state = getInput();
+            // mostraMenu();
+            // state = getInput();
         
-            switch (state) {
-                case 1:
-                    addProdotto(magazzino);
+            // switch (state) {
+            //     case 1:
+            //         addProdotto(magazzino);
 
-                    break;
-                case 2:
-                    removeProdotto();
-                    break;
-                case 3:
-                    changeQuantitaDisponibile();
-                    break;
-                case 4:
-                    showMagazzino();
-                    break;
-                case 5:
-                    showInventarioEsaurimento();
-                    break;
-            }    
+            //         break;
+            //     case 2:
+            //         removeProdotto();
+            //         break;
+            //     case 3:
+            //         changeQuantitaDisponibile();
+            //         break;
+            //     case 4:
+            //         showMagazzino();
+            //         break;
+            //     case 5:
+            //         showInventarioEsaurimento();
+            //         break;
+            // }    
         }
     }
 }
