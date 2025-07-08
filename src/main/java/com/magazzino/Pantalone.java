@@ -1,4 +1,4 @@
-package src.main.java.com.magazzino;
+package com.magazzino;
 public class Pantalone extends Prodotto {
     private int taglia;
 

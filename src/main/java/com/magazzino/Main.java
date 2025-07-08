@@ -1,4 +1,4 @@
-package src.main.java.com.magazzino;
+package com.magazzino;
 import java.util.Scanner;
 
 public class Main {
