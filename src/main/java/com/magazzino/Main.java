@@ -1,143 +1,80 @@
 package com.magazzino;
+
 import java.util.Scanner;
+import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.gui2.*;
+import com.googlecode.lanterna.screen.Screen;
+import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
+import java.io.IOException;
+import java.util.Arrays;
 
 public class Main {
 
-    public static void mostraMenu() {
-        System.out.println("Menu");
-        System.out.println("1. Aggiungi prodotto");
-        System.out.println("2. Rimuovi prodotto");
-        System.out.println("3. Cambia quantita disponibile");
-        System.out.println("4. Visualizza magazzino");
-        System.out.println("5. Mostra inventario esaurimento");
-        System.out.println("6. Esci");
+    private static void aggiungiProdotto(ProdottoDAO prodottoDAO) {
+        
     }
 
-    public static void pulisciConsole() {
-        System.out.print("\033[H\033[2J");
-        System.out.flush();
+    private static void rimuoviProdotto(ProdottoDAO prodottoDAO, int id) {
+
     }
 
-    public static int getInput(int min, int max) {
-        String messaggio = "";
-        if (min == -1 && max == -1) {
-            messaggio = String.format("Inserisci un numero");
-        }
-        else {
-            messaggio = String.format("Inserisci un numero tra %d e %d", min, max);
-        }
-  
-        Scanner s = new Scanner(System.in);
-        String input;
-        boolean flag = true;
-        int state = 0;
+    private static void cambiaQuantitaDisponibile(ProdottoDAO prodottoDAO, int id, int nuovaQuantitaDisponibile) {
 
-        while ( flag && (state < 1 || state > 6 )) {
-            System.out.println(messaggio); 
-            input = s.nextLine();
-
-            try {
-                state = Integer.parseInt(input);
-                flag = false;
-            } catch (NumberFormatException e) {
-                flag = true;   
-            }
-        }
-        s.close();
-        return state;
     }
 
-    public static double inserisciPrezzo() {
-        Scanner s = new Scanner(System.in);
-        double prezzo = 0.0;
+    private static void visualizzaInventario(ProdottoDAO prodottoDAO) {
 
-        boolean flag = true;
-        while (flag) {
-            try {
-                prezzo = s.nextDouble();
-                flag = false;
-            } catch (Exception e) {
-                System.out.println("Errore, reinserisci il prezzo");
-            }
-        }
-        s.close();
-        return prezzo;
     }
 
-    public static void addProdotto(Magazzino magazzino) {
-        Scanner s = new Scanner(System.in);
-        pulisciConsole();
+    private static void visualizzaInventarioEsaurimento(ProdottoDAO prodottoDAO) {
 
-        System.out.println("Scegli il tipo di prodotto:");
-        System.out.println("1. Scarpe");
-        System.out.println("2. Pantalone");
-        System.out.println("3. Maglia");
-        int tipo = getInput(1, 3);
-
-        System.out.println("Inserisci la descrizione del prodotto:");
-        String descrizione = s.nextLine();
-
-        System.out.println("Inserisci il prezzo del prodotto:");
-        double prezzo = inserisciPrezzo();
-
-        System.out.println("Inserisci la quantita disponibile del prodotto:");
-        int quantitaDisponibile = getInput(0, 99999);
-
-        System.out.println("Inserisci la quantita minima del prodotto:");
-        int quantitaMinima = getInput(0, 99999);
-
-        if (tipo == 1) {
-            System.out.println("Inserisci il numero delle scarpe:");
-            int numero = getInput(20, 50);
-            
-            Scarpe scarpe = new Scarpe(descrizione, prezzo, quantitaDisponibile, quantitaMinima, numero);
-            magazzino.aggiungiProdotto(scarpe);
-
-        } else {
-            System.out.println("Inserisci la taglia");
-            int taglia = getInput(10, 100);
-
-            if (tipo == 2) {
-                Pantalone pantalone = new Pantalone(descrizione, prezzo, quantitaDisponibile, quantitaMinima, taglia);
-                magazzino.aggiungiProdotto(pantalone);
-                
-            } else {
-                Maglia maglia = new Maglia(descrizione, prezzo, quantitaDisponibile, quantitaMinima, taglia);
-                magazzino.aggiungiProdotto(maglia);
-                
-            }
-        }
-        s.close();
     }
 
     public static void main(String[] args) {
-        Magazzino magazzino = Magazzino.creaIstanza();
-        String tempState = "";
-        int state = 0;
-        Scanner s = new Scanner(System.in);
-
-        while (state != 6) {
-            // mostraMenu();
-            // state = getInput();
         
-            // switch (state) {
-            //     case 1:
-            //         addProdotto(magazzino);
+        ProdottoDAO prodottoDAO = ProdottoDAO.creaIstanza();
 
-            //         break;
-            //     case 2:
-            //         removeProdotto();
-            //         break;
-            //     case 3:
-            //         changeQuantitaDisponibile();
-            //         break;
-            //     case 4:
-            //         showMagazzino();
-            //         break;
-            //     case 5:
-            //         showInventarioEsaurimento();
-            //         break;
-            // }    
+        while (true) {
+            try {
+            DefaultTerminalFactory terminalFactory = new DefaultTerminalFactory();
+            Screen screen = terminalFactory.createScreen();
+            screen.startScreen();
+
+            WindowBasedTextGUI textGUI = new MultiWindowTextGUI(screen);
+            BasicWindow window = new BasicWindow("-- Warehouse PAT --");
+
+            Panel panel = new Panel();
+            panel.setLayoutManager(new LinearLayout(Direction.VERTICAL));
+
+            // Crea le opzioni di menu come bottoni
+            panel.addComponent(new Button("1. Aggiungi prodotto", () -> {
+                aggiungiProdotto(prodottoDAO);
+            }));
+            panel.addComponent(new Button("2. Rimuovi prodotto", () -> {
+                rimuoviProdotto();
+            }));
+            panel.addComponent(new Button("3. Cambia quantità disponibile", () -> {
+                cambiaQuantitaDisponibile();
+            }));
+            panel.addComponent(new Button("4. Visualizza inventario", () -> {
+                visualizzaInventario();
+            }));
+            panel.addComponent(new Button("5. Mostra inventario in esaurimento", () -> {
+                visualizzaInventarioEsaurimento();
+            }));
+            panel.addComponent(new Button("6. Esci", () -> {
+                window.close();
+                screen.stopScreen();
+                break;
+            }));
+
+            window.setComponent(panel);
+            textGUI.addWindowAndWait(window);
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         }
     }
 }

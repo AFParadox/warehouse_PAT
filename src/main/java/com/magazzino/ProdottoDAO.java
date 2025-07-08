@@ -3,14 +3,30 @@ package com.magazzino;
 import java.sql.*;
 import java.math.BigDecimal;
 
+
 public class ProdottoDAO {
     private final String url = "jdbc:postgresql://localhost:5432/warehouse";
     private final String user = "admin";
     private final String password = "admin";
 
+    private static ProdottoDAO inst;
+    private ProdottoDAO() {}
+
+    public static ProdottoDAO creaIstanza() {
+        if (inst == null) {
+            inst = new ProdottoDAO();
+        } else {
+            System.out.println("Istanza già esistente, riferimento restituito.");
+        }
+        return inst;
+    }
+
+
     private Connection connect() throws SQLException {
         return DriverManager.getConnection(url, user, password);
     }
+
+
 
     public int aggiungiProdotto(Prodotto p) throws SQLException {
         String sql = "INSERT INTO Prodotto (tipo, descrizione, taglia, numero, prezzo, quantita_disponibile, quantita_minima) VALUES (?, ?, ?, ?, ?, ?, ?)";
@@ -23,41 +39,42 @@ public class ProdottoDAO {
             pstmt.setInt(6, p.getQuantitaDisponibile());
             pstmt.setInt(7, p.getQuantitaMinima());
             pstmt.executeUpdate();
+            return 0;
+
         } catch (SQLException e) {
             System.out.println("Errore durante l'inserimento del prodotto: " + e.getMessage());
             return -1;
         }
 
-        return 0;
     }
 
-    // Add more methods like removeProdotto, updateQuantita, listAll, listLowStock, etc.
-
-    public void rimuoviProdotto(int id) throws SQLException {
+    public int rimuoviProdotto(int id) throws SQLException {
         String sql = "DELETE FROM Prodotto WHERE id = ?";
         try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, id);
             pstmt.executeUpdate();
+            return 0;
+            
         } catch (SQLException e) {
             System.out.println("Errore durante la rimozione del prodotto: " + e.getMessage());
             return -1;
         }
 
-        return 0;
     }
 
-    public void aggiornaQuantita(int id, int nuovaQuantita) throws SQLException {
+    public int aggiornaQuantita(int id, int nuovaQuantita) throws SQLException {
         String sql = "UPDATE Prodotto SET quantita_disponibile = ? WHERE id = ?";
         try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, nuovaQuantita);
             pstmt.setInt(2, id);
             pstmt.executeUpdate();
+            return 0;
+
         } catch (SQLException e) {
             System.out.println("Errore durante l'aggiornamento della quantità: " + e.getMessage());
             return -1;
         }
 
-        return 0;
     }
 
     private Prodotto[] setupListaProdotti(ResultSet rs) {
