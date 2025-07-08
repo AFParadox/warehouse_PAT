@@ -1,6 +1,7 @@
 package com.magazzino;
 
 public abstract class Prodotto {
+    protected int id;
     protected String descrizione;
     protected double prezzo;
     protected int quantitaDisponibile;
@@ -22,6 +23,10 @@ public abstract class Prodotto {
     }
 
     // Getters
+    public int getId() {
+        return id;
+    }
+
     public String getDescrizione() {
         return descrizione;
     }
@@ -38,6 +43,16 @@ public abstract class Prodotto {
         return quantitaMinima;
     }
 
+    public int getNumero() {
+        return 0;
+    }
+
+    public int getTaglia() {
+        return 0;
+    }
+    
+    public abstract String getTipo();
+    
     // Setters
     public void setDescrizione(String descrizione) {
         this.descrizione = descrizione;
@@ -54,5 +69,7 @@ public abstract class Prodotto {
     public void setQuantitaMinima(int quantitaMinima) {
         this.quantitaMinima = quantitaMinima;
     }
+
+    
 
 }

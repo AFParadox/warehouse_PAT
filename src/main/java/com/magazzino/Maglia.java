@@ -18,6 +18,10 @@ public class Maglia extends Prodotto {
         return taglia;
     }
 
+    public String getTipo() {
+        return "Maglia";
+    }
+
     // Setters
     public void setTaglia(int taglia) {
         this.taglia = taglia;

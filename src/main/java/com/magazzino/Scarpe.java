@@ -18,6 +18,10 @@ public class Scarpe extends Prodotto {
         return numero;
     }
 
+    public String getTipo() {
+        return "Scarpe";
+    }
+
     // Setters
     public void setNumero(int numero) {
         this.numero = numero;
