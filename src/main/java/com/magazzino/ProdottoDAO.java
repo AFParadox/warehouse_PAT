@@ -3,9 +3,9 @@ package com.magazzino;
 import java.sql.*;
 
 public class ProdottoDAO {
-    private final String url = "jdbc:postgresql://localhost:5432/warehouse";
-    private final String user = "admin";
-    private final String password = "admin";
+    private final String url = InterfacciaConfigurazione.get("db.url");
+    private final String user = InterfacciaConfigurazione.get("db.user");
+    private final String password = InterfacciaConfigurazione.get("db.password");
     private Connection conn;
 
     private static ProdottoDAO inst;
