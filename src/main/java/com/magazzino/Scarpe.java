@@ -13,6 +13,11 @@ public class Scarpe extends Prodotto {
         this.numero = numero;
     }
 
+    Scarpe(int id, String descrizione, double prezzo, int quantitaDisponibile, int quantitaMinima, int numero) {
+        super(id, descrizione, prezzo, quantitaDisponibile, quantitaMinima);
+        this.numero = numero;
+    }
+
     // Getters
     public int getNumero() {
         return numero;

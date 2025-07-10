@@ -14,6 +14,12 @@ public class Main {
     private static final int minQtaMinima = InterfacciaConfigurazione.getInt("minQtaMinima");
     private static final int maxQtaMinima = InterfacciaConfigurazione.getInt("maxQtaMinima");
     private static final String[] tipiProdotto = InterfacciaConfigurazione.getArray("prodotti");
+    private static final int minTagliaMaglia = InterfacciaConfigurazione.getInt("minTagliaMaglia");
+    private static final int maxTagliaMaglia = InterfacciaConfigurazione.getInt("maxTagliaMaglia");
+    private static final int minTagliaPantalone = InterfacciaConfigurazione.getInt("minTagliaPantalone");
+    private static final int maxTagliaPantalone = InterfacciaConfigurazione.getInt("maxTagliaPantalone");
+    private static final int minNumeroScarpe = InterfacciaConfigurazione.getInt("minNumeroScarpe");
+    private static final int maxNumeroScarpe = InterfacciaConfigurazione.getInt("maxNumeroScarpe");
 
     private static void pulisciTerminale() {
         System.out.print("\033[H\033[2J");
@@ -49,8 +55,8 @@ public class Main {
     }
 
     private static String inputSelezione(Scanner s) {
-        String input = s.nextLine().toLowerCase();
-        while (Arrays.asList(tipiProdotto).contains(input)) {
+        String input = s.nextLine().toUpperCase();
+        while (!Arrays.asList(tipiProdotto).contains(input)) {
             System.out.println("Inserisci un tipo di prodotto valido (Maglia, Pantalone, Scarpe): ");
             input = s.nextLine();
         }
@@ -72,17 +78,17 @@ public class Main {
         int quantitaMinima = inputNum(s, minQtaMinima, maxQtaMinima, sc -> sc.nextInt(), "int");
 
         Prodotto p;
-        if ("maglia".equals(tipo)) {
+        if ("MAGLIA".equals(tipo)) {
             System.out.println("Inserisci la taglia del prodotto: ");
-            int taglia = s.nextInt();
+            int taglia = inputNum(s, minTagliaMaglia, maxTagliaMaglia, sc -> sc.nextInt(), "int");
             p = new Maglia(descrizione, prezzo, quantitaDisponibile, quantitaMinima, taglia);
-        } else if ("scarpe".equals(tipo)) {
+        } else if ("SCARPE".equals(tipo)) {
             System.out.println("Inserisci il numero del prodotto: ");
-            int numero = s.nextInt();
+            int numero = inputNum(s, minNumeroScarpe, maxNumeroScarpe, sc -> sc.nextInt(), "int");
             p = new Scarpe(descrizione, prezzo, quantitaDisponibile, quantitaMinima, numero);
         } else { // if ("pantalone".equals(tipo)) unica opzione rimasta
             System.out.println("Inserisci la taglia del prodotto: ");
-            int taglia = s.nextInt();
+            int taglia = inputNum(s, minTagliaPantalone, maxTagliaPantalone, sc -> sc.nextInt(), "int");
             p = new Pantalone(descrizione, prezzo, quantitaDisponibile, quantitaMinima, taglia);
         }
 
@@ -109,9 +115,9 @@ public class Main {
         pulisciTerminale();
         Prodotto[] prodotti = prodottoDAO.inventario();
         System.out.println("Prodotti presenti nell'inventario:");
-        System.out.println("ID" + "\t" + "Descrizione" + "\t" + "Prezzo" + "\t" + "Quantità disponibile" + "\t" + "Quantità minima" + "\t" + "Taglia" + "\t" + "Numero");
+        System.out.println("ID\tTipo\tPrezzo\tQtaDisp\tQtaMin\tTaglia\tNumero\tDescrizione");
         for (Prodotto p : prodotti) {
-            System.out.println(p.getId() + "\t" + p.getDescrizione() + "\t" + p.getPrezzo() + "\t" + p.getQuantitaDisponibile() + "\t" + p.getQuantitaMinima() + "\t" + p.getTaglia() + "\t" + p.getNumero());
+            System.out.println(p.getId() + "\t" + p.getTipo() + "\t" + p.getPrezzo() + "\t" + p.getQuantitaDisponibile() + "\t" + p.getQuantitaMinima() + "\t" + p.getTaglia() + "\t" + p.getNumero() + "\t" + p.getDescrizione());
         }
     }
 
@@ -119,9 +125,9 @@ public class Main {
         pulisciTerminale();
         Prodotto[] prodotti = prodottoDAO.prodottiInEsaurimento();
         System.out.println("Prodotti in esaurimento nell'inventario:");
-        System.out.println("ID" + "\t" + "Descrizione" + "\t" + "Prezzo" + "\t" + "Quantità disponibile" + "\t" + "Quantità minima" + "\t" + "Taglia" + "\t" + "Numero");
+        System.out.println("ID\tTipo\tPrezzo\tQtaDisp\tQtaMin\tTaglia\tNumero\tDescrizione");
         for (Prodotto p : prodotti) {
-            System.out.println(p.getId() + "\t" + p.getDescrizione() + "\t" + p.getPrezzo() + "\t" + p.getQuantitaDisponibile() + "\t" + p.getQuantitaMinima() + "\t" + p.getTaglia() + "\t" + p.getNumero());
+            System.out.println(p.getId() + "\t" + p.getTipo() + "\t" + p.getPrezzo() + "\t" + p.getQuantitaDisponibile() + "\t" + p.getQuantitaMinima() + "\t" + p.getTaglia() + "\t" + p.getNumero() + "\t" + p.getDescrizione());
         }
     }
 
@@ -138,20 +144,36 @@ public class Main {
             switch (opzione) {
                 case 1:
                     aggiungiProdotto(prodottoDAO, s);
+                    if (s.hasNextLine()) s.nextLine();
+                    System.out.println("Premi un tasto per continuare...");
+                    s.nextLine();
                     break;
                 case 2:
                     rimuoviProdotto(prodottoDAO, s);
+                    if (s.hasNextLine()) s.nextLine();
+                    System.out.println("Premi un tasto per continuare...");
+                    s.nextLine();
                     break;
                 case 3:
                     cambiaQuantitaDisponibile(prodottoDAO, s);
+                    if (s.hasNextLine()) s.nextLine();
+                    System.out.println("Premi un tasto per continuare...");
+                    s.nextLine();
                     break;
                 case 4:
                     visualizzaInventario(prodottoDAO);
+                    if (s.hasNextLine()) s.nextLine();
+                    System.out.println("Premi un tasto per continuare...");
+                    s.nextLine();
                     break;
                 case 5:
                     visualizzaInventarioEsaurimento(prodottoDAO);
+                    if (s.hasNextLine()) s.nextLine();
+                    System.out.println("Premi un tasto per continuare...");
+                    s.nextLine();
                     break;
                 case 6:
+                    if (s.hasNextLine()) s.nextLine();
                     flag = false;
                     break;
                 default:
@@ -165,5 +187,8 @@ public class Main {
             }
 
         }
+
+        System.out.println("Chiusura");
+        System.exit(0); 
     }
 }

@@ -22,6 +22,13 @@ public abstract class Prodotto {
         this.quantitaMinima = quantitaMinima;
     }
 
+    Prodotto(int id,String descrizione, double prezzo, int quantitaDisponibile, int quantitaMinima) {
+        this.id = id;
+        this.descrizione = descrizione;
+        this.prezzo = prezzo;
+        this.quantitaDisponibile = quantitaDisponibile;
+        this.quantitaMinima = quantitaMinima;
+    }
     // Getters
     public int getId() {
         return id;

@@ -13,6 +13,11 @@ public class Pantalone extends Prodotto {
         this.taglia = taglia;
     }
 
+    Pantalone(int id, String descrizione, double prezzo, int quantitaDisponibile, int quantitaMinima, int taglia) {
+        super(id, descrizione, prezzo, quantitaDisponibile, quantitaMinima);
+        this.taglia = taglia;
+    }
+
     // Getters
     public int getTaglia() {
         return taglia;

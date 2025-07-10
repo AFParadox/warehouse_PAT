@@ -31,49 +31,62 @@ public class ProdottoDAO {
     }
 
     public int aggiungiProdotto(Prodotto p) {
-        String sql = "INSERT INTO Prodotto (tipo, descrizione, taglia, numero, prezzo, quantita_disponibile, quantita_minima) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql;
+        String tipo = p.getTipo().toUpperCase();
+        if (tipo == "MAGLIA" || tipo == "PANTALONE") { 
+            sql = "INSERT INTO prodotti (tipo, descrizione, taglia, prezzo, quantita_disponibile, quantita_minima) VALUES (?, ?, ?, ?, ?, ?)";
+        }
+        else {
+            sql = "INSERT INTO prodotti (tipo, descrizione, numero, prezzo, quantita_disponibile, quantita_minima) VALUES (?, ?, ?, ?, ?, ?)";
+        }
         try (PreparedStatement pstmt = this.conn.prepareStatement(sql)) {
-            pstmt.setString(1, p.getTipo());
+            pstmt.setString(1, tipo);
             pstmt.setString(2, p.getDescrizione());
-            pstmt.setInt(3, p instanceof Maglia || p instanceof Pantalone ? p.getTaglia() : null);
-            pstmt.setObject(4, p instanceof Scarpe ? ((Scarpe)p).getNumero() : null);
-            pstmt.setDouble(5, p.getPrezzo());
-            pstmt.setInt(6, p.getQuantitaDisponibile());
-            pstmt.setInt(7, p.getQuantitaMinima());
+            if (tipo == "MAGLIA" || tipo == "PANTALONE") {
+                pstmt.setInt(3, p.getTaglia()); 
+            }
+            else {
+                pstmt.setObject(3, p.getNumero()); 
+            }
+            pstmt.setDouble(4, p.getPrezzo());
+            pstmt.setInt(5, p.getQuantitaDisponibile());
+            pstmt.setInt(6, p.getQuantitaMinima());
             pstmt.executeUpdate();
+            System.out.println("Prodotto aggiunto");
             return 0;
 
         } catch (SQLException e) {
-            System.out.println("Errore durante l'inserimento del prodotto: " + e.getMessage());
+            System.out.println("Errore aggiungiProdotto: " + e.getMessage());
             return -1;
         }
-
     }
 
     public int rimuoviProdotto(int id){
-        String sql = "DELETE FROM Prodotto WHERE id = ?";
+        String sql = "DELETE FROM prodotti WHERE id = ?";
         try (PreparedStatement pstmt = this.conn.prepareStatement(sql)) {
             pstmt.setInt(1, id);
             pstmt.executeUpdate();
+            System.out.println("Prodotto rimosso");
             return 0;
             
         } catch (SQLException e) {
-            System.out.println("Errore durante la rimozione del prodotto: " + e.getMessage());
+            System.out.println("Errore rimuoviProdotto: " + e.getMessage());
             return -1;
         }
 
     }
 
     public int aggiornaQuantita(int id, int nuovaQuantita) {
-        String sql = "UPDATE Prodotto SET quantita_disponibile = ? WHERE id = ?";
+        String sql = "UPDATE prodotti SET quantita_disponibile = ? WHERE id = ?";
         try (PreparedStatement pstmt = this.conn.prepareStatement(sql)) {
             pstmt.setInt(1, nuovaQuantita);
             pstmt.setInt(2, id);
             pstmt.executeUpdate();
+            System.out.println("Quantità disponibile aggiornata");
             return 0;
 
         } catch (SQLException e) {
-            System.out.println("Errore durante l'aggiornamento della quantità: " + e.getMessage());
+            System.out.println("Errore aggiornaQuantita: " + e.getMessage());
             return -1;
         }
 
@@ -85,6 +98,7 @@ public class ProdottoDAO {
         try {
 
             while (rs.next()) {
+                int id = rs.getInt("id");
                 String tipo = rs.getString("tipo");
                 String descrizione = rs.getString("descrizione");
                 int taglia = rs.getInt("taglia");
@@ -94,12 +108,12 @@ public class ProdottoDAO {
                 int quantitaMinima = rs.getInt("quantita_minima");
                 
                 Prodotto p;
-                if ("Maglia".equals(tipo)) {
-                    p = new Maglia(descrizione, prezzo, quantitaDisponibile, quantitaMinima, taglia);
-                } else if ("Pantalone".equals(tipo)) {
-                    p = new Pantalone(descrizione, prezzo, quantitaDisponibile, quantitaMinima, taglia);
-                } else if ("Scarpe".equals(tipo)) {
-                    p = new Scarpe(descrizione, prezzo, quantitaDisponibile, quantitaMinima, numero);
+                if ("MAGLIA".equals(tipo)) {
+                    p = new Maglia(id, descrizione, prezzo, quantitaDisponibile, quantitaMinima, taglia);
+                } else if ("PANTALONE".equals(tipo)) {
+                    p = new Pantalone(id, descrizione, prezzo, quantitaDisponibile, quantitaMinima, taglia);
+                } else if ("SCARPE".equals(tipo)) {
+                    p = new Scarpe(id, descrizione, prezzo, quantitaDisponibile, quantitaMinima, numero);
                 } else {
                     continue; // else per good practices
                 }
@@ -115,7 +129,7 @@ public class ProdottoDAO {
     }
 
     public Prodotto[] inventario() {
-        String sql = "SELECT * FROM Prodotto";
+        String sql = "SELECT * FROM prodotti";
         try (Statement stmt = this.conn.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
             return setupListaProdotti(rs);
         } catch (SQLException e) {
@@ -125,7 +139,7 @@ public class ProdottoDAO {
     }
 
     public Prodotto[] prodottiInEsaurimento() {
-        String sql = "SELECT * FROM Prodotto WHERE quantita_disponibile < quantita_minima";
+        String sql = "SELECT * FROM prodotti WHERE quantita_disponibile < quantita_minima";
         try (Statement stmt = this.conn.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
             return setupListaProdotti(rs);
         } catch (SQLException e) {
