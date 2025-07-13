@@ -58,7 +58,7 @@ public class Main {
         String input = s.nextLine().toUpperCase();
         while (!Arrays.asList(tipiProdotto).contains(input)) {
             System.out.println("Inserisci un tipo di prodotto valido (Maglia, Pantalone, Scarpe): ");
-            input = s.nextLine();
+            input = s.nextLine().toUpperCase();
         }
         return input;
     }

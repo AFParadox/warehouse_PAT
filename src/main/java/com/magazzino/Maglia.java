@@ -24,7 +24,7 @@ public class Maglia extends Prodotto {
     }
 
     public String getTipo() {
-        return "Maglia";
+        return "MAGLIA";
     }
 
     // Setters

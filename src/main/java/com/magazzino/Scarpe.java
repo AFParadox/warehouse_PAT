@@ -24,7 +24,7 @@ public class Scarpe extends Prodotto {
     }
 
     public String getTipo() {
-        return "Scarpe";
+        return "SCARPE";
     }
 
     // Setters

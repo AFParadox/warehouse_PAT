@@ -33,6 +33,7 @@ public class ProdottoDAO {
     public int aggiungiProdotto(Prodotto p) {
         String sql;
         String tipo = p.getTipo().toUpperCase();
+        System.out.println("tipo: " + tipo);
         if (tipo == "MAGLIA" || tipo == "PANTALONE") { 
             sql = "INSERT INTO prodotti (tipo, descrizione, taglia, prezzo, quantita_disponibile, quantita_minima) VALUES (?, ?, ?, ?, ?, ?)";
         }
@@ -43,16 +44,27 @@ public class ProdottoDAO {
             pstmt.setString(1, tipo);
             pstmt.setString(2, p.getDescrizione());
             if (tipo == "MAGLIA" || tipo == "PANTALONE") {
+                System.out.println("tipo MAGLIA o PANTALONE");
                 pstmt.setInt(3, p.getTaglia()); 
             }
             else {
+                System.out.println("altro SCARPE");
                 pstmt.setObject(3, p.getNumero()); 
             }
             pstmt.setDouble(4, p.getPrezzo());
             pstmt.setInt(5, p.getQuantitaDisponibile());
             pstmt.setInt(6, p.getQuantitaMinima());
             pstmt.executeUpdate();
-            System.out.println("Prodotto aggiunto");
+
+            if (tipo == "MAGLIA" || tipo == "PANTALONE") { 
+                System.out.println("Prodotto aggiunto: " + p.getTipo() + " " + p.getDescrizione() + " prezzo: " + p.getPrezzo() + " qta disponibile: " + p.getQuantitaDisponibile() + " qta minima: " + p.getQuantitaMinima() + " taglia: " + p.getTaglia());
+
+            }
+            else {
+                System.out.println("Prodotto aggiunto: " + p.getTipo() + " " + p.getDescrizione() + " prezzo: " + p.getPrezzo() + " qta disponibile: " + p.getQuantitaDisponibile() + " qta minima: " + p.getQuantitaMinima() + " numero: " + p.getNumero());
+
+            }
+
             return 0;
 
         } catch (SQLException e) {
