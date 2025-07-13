@@ -5,9 +5,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class ProdottoDAOTest {
 
-    // I test, per semplicita', vanno eseguiti a tabella vuota, dato che gli id vengono generati automaticamente
-    // e nei metodi di test in cui sono necessari come parametri sono stati hard-coded
-
     private static ProdottoDAO prodottoDAO;
 
     @BeforeAll
