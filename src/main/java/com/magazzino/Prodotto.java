@@ -54,8 +54,8 @@ public abstract class Prodotto {
         return 0;
     }
 
-    public int getTaglia() {
-        return 0;
+    public String getTaglia() {
+        return "";
     }
     
     public abstract String getTipo();

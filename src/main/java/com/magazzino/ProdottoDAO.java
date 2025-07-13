@@ -33,7 +33,6 @@ public class ProdottoDAO {
     public int aggiungiProdotto(Prodotto p) {
         String sql;
         String tipo = p.getTipo().toUpperCase();
-        System.out.println("tipo: " + tipo);
         if (tipo == "MAGLIA" || tipo == "PANTALONE") { 
             sql = "INSERT INTO prodotti (tipo, descrizione, taglia, prezzo, quantita_disponibile, quantita_minima) VALUES (?, ?, ?, ?, ?, ?)";
         }
@@ -44,8 +43,7 @@ public class ProdottoDAO {
             pstmt.setString(1, tipo);
             pstmt.setString(2, p.getDescrizione());
             if (tipo == "MAGLIA" || tipo == "PANTALONE") {
-                System.out.println("tipo MAGLIA o PANTALONE");
-                pstmt.setInt(3, p.getTaglia()); 
+                pstmt.setString(3, p.getTaglia()); 
             }
             else {
                 System.out.println("altro SCARPE");
@@ -77,10 +75,15 @@ public class ProdottoDAO {
         String sql = "DELETE FROM prodotti WHERE id = ?";
         try (PreparedStatement pstmt = this.conn.prepareStatement(sql)) {
             pstmt.setInt(1, id);
-            pstmt.executeUpdate();
-            System.out.println("Prodotto rimosso");
-            return 0;
-            
+            int numRigheCancellate = pstmt.executeUpdate();
+
+            if (numRigheCancellate == 0) {
+                System.out.println("Prodotto non trovato, operazione fallita");
+                return 1;
+            } else {
+                System.out.println("Prodotto rimosso");
+                return 0;
+            }
         } catch (SQLException e) {
             System.out.println("Errore rimuoviProdotto: " + e.getMessage());
             return -1;
@@ -93,10 +96,15 @@ public class ProdottoDAO {
         try (PreparedStatement pstmt = this.conn.prepareStatement(sql)) {
             pstmt.setInt(1, nuovaQuantita);
             pstmt.setInt(2, id);
-            pstmt.executeUpdate();
-            System.out.println("Quantità disponibile aggiornata");
-            return 0;
+            int numRigheAggiornate = pstmt.executeUpdate();
 
+            if (numRigheAggiornate == 0) {
+                System.out.println("Prodotto non trovato, operazione fallita");
+                return 1;
+            } else {
+                System.out.println("Quantità disponibile aggiornata");
+                return 0;
+            }
         } catch (SQLException e) {
             System.out.println("Errore aggiornaQuantita: " + e.getMessage());
             return -1;
@@ -113,7 +121,7 @@ public class ProdottoDAO {
                 int id = rs.getInt("id");
                 String tipo = rs.getString("tipo");
                 String descrizione = rs.getString("descrizione");
-                int taglia = rs.getInt("taglia");
+                String taglia = rs.getString("taglia");
                 int numero = rs.getInt("numero");
                 double prezzo = rs.getDouble("prezzo");
                 int quantitaDisponibile = rs.getInt("quantita_disponibile");
@@ -141,7 +149,7 @@ public class ProdottoDAO {
     }
 
     public Prodotto[] inventario() {
-        String sql = "SELECT * FROM prodotti";
+        String sql = "SELECT * FROM prodotti ORDER BY id";
         try (Statement stmt = this.conn.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
             return setupListaProdotti(rs);
         } catch (SQLException e) {
@@ -151,7 +159,7 @@ public class ProdottoDAO {
     }
 
     public Prodotto[] prodottiInEsaurimento() {
-        String sql = "SELECT * FROM prodotti WHERE quantita_disponibile < quantita_minima";
+        String sql = "SELECT * FROM prodotti WHERE quantita_disponibile < quantita_minima ORDER BY id";
         try (Statement stmt = this.conn.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
             return setupListaProdotti(rs);
         } catch (SQLException e) {

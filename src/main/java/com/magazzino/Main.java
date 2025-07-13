@@ -13,13 +13,11 @@ public class Main {
     private static final int maxQtaDisponibile = InterfacciaConfigurazione.getInt("maxQtaDisponibile");
     private static final int minQtaMinima = InterfacciaConfigurazione.getInt("minQtaMinima");
     private static final int maxQtaMinima = InterfacciaConfigurazione.getInt("maxQtaMinima");
-    private static final String[] tipiProdotto = InterfacciaConfigurazione.getArray("prodotti");
-    private static final int minTagliaMaglia = InterfacciaConfigurazione.getInt("minTagliaMaglia");
-    private static final int maxTagliaMaglia = InterfacciaConfigurazione.getInt("maxTagliaMaglia");
-    private static final int minTagliaPantalone = InterfacciaConfigurazione.getInt("minTagliaPantalone");
-    private static final int maxTagliaPantalone = InterfacciaConfigurazione.getInt("maxTagliaPantalone");
     private static final int minNumeroScarpe = InterfacciaConfigurazione.getInt("minNumeroScarpe");
     private static final int maxNumeroScarpe = InterfacciaConfigurazione.getInt("maxNumeroScarpe");
+
+    private static final String[] tipiProdotto = InterfacciaConfigurazione.getArray("prodotti");
+    private static final String[] taglie = InterfacciaConfigurazione.getArray("taglie");
 
     private static void pulisciTerminale() {
         System.out.print("\033[H\033[2J");
@@ -54,10 +52,10 @@ public class Main {
         return input;
     }
 
-    private static String inputSelezione(Scanner s) {
+    private static String inputSelezione(Scanner s, String[] options) {
         String input = s.nextLine().toUpperCase();
-        while (!Arrays.asList(tipiProdotto).contains(input)) {
-            System.out.println("Inserisci un tipo di prodotto valido (Maglia, Pantalone, Scarpe): ");
+        while (!Arrays.asList(options).contains(input)) {
+            System.out.println("Inserisci un valore valido: " + Arrays.toString(options));
             input = s.nextLine().toUpperCase();
         }
         return input;
@@ -66,29 +64,32 @@ public class Main {
     private static void aggiungiProdotto(ProdottoDAO prodottoDAO, Scanner s) {
         pulisciTerminale();
         System.out.println("Inserisci il tipo del prodotto (Maglia, Pantalone, Scarpe): ");
-        if (s.hasNextLine()) s.nextLine();
-        String tipo = inputSelezione(s);
+        String tipo = inputSelezione(s, tipiProdotto);
         System.out.println("Inserisci la descrizione del prodotto: ");
         String descrizione = s.nextLine();
         System.out.println("Inserisci il prezzo del prodotto: ");
         double prezzo = inputNum(s, minPrezzo, maxPrezzo, sc -> sc.nextDouble(), "double");
+        s.nextLine();
         System.out.println("Inserisci la quantità disponibile del prodotto: ");
         int quantitaDisponibile = inputNum(s, minQtaDisponibile, maxQtaDisponibile, sc -> sc.nextInt(), "int");
+        s.nextLine();
         System.out.println("Inserisci la quantità minima del prodotto: ");
         int quantitaMinima = inputNum(s, minQtaMinima, maxQtaMinima, sc -> sc.nextInt(), "int");
+        s.nextLine();
 
         Prodotto p;
         if ("MAGLIA".equals(tipo)) {
             System.out.println("Inserisci la taglia del prodotto: ");
-            int taglia = inputNum(s, minTagliaMaglia, maxTagliaMaglia, sc -> sc.nextInt(), "int");
+            String taglia = inputSelezione(s, taglie);
             p = new Maglia(descrizione, prezzo, quantitaDisponibile, quantitaMinima, taglia);
         } else if ("SCARPE".equals(tipo)) {
             System.out.println("Inserisci il numero del prodotto: ");
             int numero = inputNum(s, minNumeroScarpe, maxNumeroScarpe, sc -> sc.nextInt(), "int");
+            s.nextLine();
             p = new Scarpe(descrizione, prezzo, quantitaDisponibile, quantitaMinima, numero);
         } else { // if ("pantalone".equals(tipo)) unica opzione rimasta
             System.out.println("Inserisci la taglia del prodotto: ");
-            int taglia = inputNum(s, minTagliaPantalone, maxTagliaPantalone, sc -> sc.nextInt(), "int");
+            String taglia = inputSelezione(s, taglie);
             p = new Pantalone(descrizione, prezzo, quantitaDisponibile, quantitaMinima, taglia);
         }
 
@@ -99,6 +100,7 @@ public class Main {
         pulisciTerminale();
         System.out.println("Inserisci l'id del prodotto da rimuovere: ");
         int id = s.nextInt();
+        s.nextLine();
         prodottoDAO.rimuoviProdotto(id);
     }
 
@@ -106,8 +108,10 @@ public class Main {
         pulisciTerminale();
         System.out.println("Inserisci l'id del prodotto da aggiornare: ");
         int id = s.nextInt();
+        s.nextLine();
         System.out.println("Inserisci la nuova quantità disponibile: ");
         int nuovaQuantitaDisponibile = inputNum(s, minQtaDisponibile, maxQtaDisponibile, sc -> sc.nextInt(), "int");
+        s.nextLine();
         prodottoDAO.aggiornaQuantita(id, nuovaQuantitaDisponibile);
     }
 
@@ -140,40 +144,35 @@ public class Main {
 
         while (flag) {
             menu();
-            opzione = s.nextInt();
+            opzione = inputNum(s, 1, 6, sc -> sc.nextInt(), "int");
+            s.nextLine();
             switch (opzione) {
                 case 1:
                     aggiungiProdotto(prodottoDAO, s);
-                    if (s.hasNextLine()) s.nextLine();
                     System.out.println("Premi un tasto per continuare...");
                     s.nextLine();
                     break;
                 case 2:
                     rimuoviProdotto(prodottoDAO, s);
-                    if (s.hasNextLine()) s.nextLine();
                     System.out.println("Premi un tasto per continuare...");
                     s.nextLine();
                     break;
                 case 3:
                     cambiaQuantitaDisponibile(prodottoDAO, s);
-                    if (s.hasNextLine()) s.nextLine();
                     System.out.println("Premi un tasto per continuare...");
                     s.nextLine();
                     break;
                 case 4:
                     visualizzaInventario(prodottoDAO);
-                    if (s.hasNextLine()) s.nextLine();
                     System.out.println("Premi un tasto per continuare...");
                     s.nextLine();
                     break;
                 case 5:
                     visualizzaInventarioEsaurimento(prodottoDAO);
-                    if (s.hasNextLine()) s.nextLine();
                     System.out.println("Premi un tasto per continuare...");
                     s.nextLine();
                     break;
                 case 6:
-                    if (s.hasNextLine()) s.nextLine();
                     flag = false;
                     break;
                 default:
