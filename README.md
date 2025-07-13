@@ -8,6 +8,6 @@ Per l'esecuzione del programma e' necessario avere docker-compose e maven instal
 Step per l'esecuzione:
 - da console, portarsi nella directory del progetto
 - eseguire `docker-compose up -d`
-- eseguire "mvn compile" per compilare il progetto
-- eseguire "mvn test" per runnare i test, va tenuto in mente che alla fine dei test il database verrà svuotato.
-- eseguire "mvn exec:java" per eseguire il programma e interagirci da cli. 
+- eseguire `mvn compile` per compilare il progetto 
+- eseguire `mvn test` per runnare i test, va tenuto in mente che alla fine dei test il database verrà svuotato.
+- eseguire `mvn exec:java` per eseguire il programma e interagirci da cli.  
